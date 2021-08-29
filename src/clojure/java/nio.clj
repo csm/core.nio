@@ -124,7 +124,7 @@
     (let [response (async/promise-chan)]
       (.connect this address response
                 (completion-handler (fn [_ ch] (async/put! ch {}))
-                                    error-handler))
+                                    exception-handler))
       response)))
 
 (extend-protocol AsyncAccept
@@ -133,7 +133,7 @@
     (let [response (async/promise-chan)]
       (.accept this response
                (completion-handler (fn [chan ch] (async/put! ch chan))
-                                   error-handler))
+                                   exception-handler))
       response)))
 
 (defn wrap-socket
