@@ -62,10 +62,8 @@
   [on-success on-failure]
   (reify CompletionHandler
     (completed [_ result attachment]
-      (println "completed" result attachment)
       (on-success result attachment))
     (failed [_ exception attachment]
-      (println "failed" exception attachment)
       (on-failure exception attachment))))
 
 (defn exception-handler
