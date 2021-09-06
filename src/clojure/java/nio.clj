@@ -223,3 +223,22 @@
                               (recur)))))]
       {:socket channel :close-chan closer :server-loop server-loop})))
 
+(defprotocol Allocator
+  (allocate! [this size]
+    "Allocate a new ByteBuffer with capacity at least size.")
+
+  (release! [this buffer]
+    "Return a buffer to this allocator."))
+
+(deftype DefaultAllocator [direct?]
+  Allocator
+  (allocate! [_ size]
+    (async/go
+      (if direct?
+        (ByteBuffer/allocateDirect size)
+        (ByteBuffer/allocate size))))
+
+  (release! [_ _]
+    (async/go))) ; no-op, managed by GC
+
+(defn default-allocator [& {:keys [direct?]}] (->DefaultAllocator direct?))
